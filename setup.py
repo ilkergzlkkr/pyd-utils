@@ -17,9 +17,9 @@ extras_require = {"dev": ["black", "pytest", "flake8"]}
 
 
 setuptools.setup(
-    name="py-utils",
+    name="pyd-utils",
     version=version,
-    description="py-utils",
+    description="pyd-utils",
     author="ilkergzlkkr",
     author_email="guzelkokarilker@gmail.com",
     packages=["pyutils"],
