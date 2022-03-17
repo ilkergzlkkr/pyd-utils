@@ -25,6 +25,7 @@ __pypackages__/
 *.egg
 *.manifest
 *.spec
+dist/
 
 # Installer logs
 pip-log.txt
