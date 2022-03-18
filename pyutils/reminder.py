@@ -4,7 +4,7 @@ import dataclasses
 import enum
 import logging
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 log = logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ class RemindDate:
     weekday: t.Optional[WEEKDAYS] = None
     hour: float = None
     minute: float = None
+    timezone: t.Optional[timezone] = None
 
     def __post_init__(self):
         if self.weekday == self.hour == self.minute is None:
@@ -64,7 +65,7 @@ class Remind:
         return self.state["last_seen"]
 
     def set_last_seen(self):
-        self.state["last_seen"] = datetime.now()
+        self.state["last_seen"] = datetime.now(tz=self.date.timezone)
 
     async def wait_next(self) -> bool:
         raise NotImplementedError
@@ -74,7 +75,7 @@ class Remind:
             raise NotImplementedError
 
         async with self.lock:
-            now = datetime.now()
+            now = datetime.now(tz=self.date.timezone)
             if (
                 self.last_seen is not None
                 and self.last_seen + self.timedelta > now  # noqa E501

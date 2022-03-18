@@ -1,6 +1,12 @@
+from datetime import timedelta, timezone
 import pytest
 import typing as t
-from pyutils.reminder import parse_hour, parse_weekday, WEEKDAYS, RemindDate # noqa F401
+from pyutils.reminder import (
+    parse_hour,
+    parse_weekday,
+    WEEKDAYS,
+    RemindDate,
+)
 
 
 def test_parse_weekday():
@@ -21,10 +27,12 @@ def test_parse_hour():
 def remind_dates():
     return [
         RemindDate(weekday=WEEKDAYS.FRIDAY),
-        RemindDate(hour=15),
+        RemindDate(hour=15, timezone=timezone(timedelta(hours=+3))),
         RemindDate(minute=40),
         RemindDate(weekday=WEEKDAYS.MONDAY, hour=9, minute=10),
-        RemindDate(weekday=WEEKDAYS.TUESDAY, hour=15),
+        RemindDate(
+            weekday=WEEKDAYS.TUESDAY, hour=15, timezone=timezone(timedelta(hours=-9))
+        ),
         RemindDate(weekday=WEEKDAYS.SATURDAY, minute=10),
         RemindDate(hour=18, minute=10),
     ]
@@ -36,3 +44,4 @@ def test_remind_date(remind_dates: t.List[RemindDate]):
 
     for date in remind_dates:
         assert (date.hour or date.minute or date.weekday) is not None
+        assert isinstance(date.timezone, timezone) or date.timezone is None
