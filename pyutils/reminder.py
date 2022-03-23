@@ -64,18 +64,23 @@ class Remind:
     def last_seen(self) -> t.Optional[datetime]:
         return self.state["last_seen"]
 
+    @property
+    def weekday(self) -> t.Optional[WEEKDAYS]:
+        return self.date.weekday() if isinstance(self.date, datetime) else self.date.weekday
+
+    @property
+    def timezone(self) -> t.Optional[timezone]:
+        return self.date.tzinfo if isinstance(self.date, datetime) else self.date.timezone
+
     def set_last_seen(self):
-        self.state["last_seen"] = datetime.now(tz=self.date.timezone)
+        self.state["last_seen"] = datetime.now(tz=self.timezone)
 
     async def wait_next(self) -> bool:
         raise NotImplementedError
 
     async def passive_remind(self) -> bool:
-        if not isinstance(self.date, RemindDate):
-            raise NotImplementedError
-
         async with self.lock:
-            now = datetime.now(tz=self.date.timezone)
+            now = datetime.now(tz=self.timezone)
             if (
                 self.last_seen is not None
                 and self.last_seen + self.timedelta > now  # noqa E501
@@ -83,7 +88,7 @@ class Remind:
                 return False
 
             weekday, hour = now.weekday(), now.hour
-            if weekday == self.date.weekday and hour == self.date.hour:
+            if weekday == self.weekday and hour == self.date.hour:
                 self.set_last_seen()
                 return True
 
