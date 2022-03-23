@@ -13,7 +13,7 @@ with open("pyutils/__init__.py") as f:
 if not version:
     raise RuntimeError("version is not set")
 
-extras_require = {"dev": ["black", "pytest", "flake8"]}
+extras_require = {"dev": ["black", "pytest", "pytest-asyncio", "flake8"]}
 
 
 setuptools.setup(
