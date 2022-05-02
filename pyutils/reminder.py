@@ -96,9 +96,23 @@ class Remind:
             ):
                 return False
 
-            weekday, hour = now.weekday(), now.hour
-            if weekday == self.weekday and hour == self.date.hour:
-                self.set_last_seen()
-                return True
+            if isinstance(self.date, datetime):
+                # >---- (reached, date)---timedelta---(passed) ----<
+                passed = now > self.date + self.timedelta
+                reached = now >= self.date
 
-            return False
+                if passed or not reached:
+                    return False
+
+            else:
+                weekday, hour, minute = now.weekday(), now.hour, now.minute
+                # optionals passed from check using -or-
+                if (
+                    weekday != (self.weekday or weekday)
+                    or hour != (self.date.hour or hour)
+                    or minute != (self.date.minute or minute)
+                ):
+                    return False
+
+            self.set_last_seen()
+            return True
