@@ -46,6 +46,9 @@ class RemindDate:
 
 
 RD = t.TypeVar("RD", datetime, RemindDate)
+# TODO: if reminder is in a specific datetime
+# ask for start & end argument NOT delay argument
+# remove weekday property
 
 
 class Remind:
@@ -66,11 +69,17 @@ class Remind:
 
     @property
     def weekday(self) -> t.Optional[WEEKDAYS]:
-        return self.date.weekday() if isinstance(self.date, datetime) else self.date.weekday
+        return (
+            self.date.weekday()
+            if isinstance(self.date, datetime)
+            else self.date.weekday
+        )
 
     @property
     def timezone(self) -> t.Optional[timezone]:
-        return self.date.tzinfo if isinstance(self.date, datetime) else self.date.timezone
+        return (
+            self.date.tzinfo if isinstance(self.date, datetime) else self.date.timezone
+        )
 
     def set_last_seen(self):
         self.state["last_seen"] = datetime.now(tz=self.timezone)
